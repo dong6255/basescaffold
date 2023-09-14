@@ -7,6 +7,7 @@
     <groupId>com.lvch.baseScaffold</groupId>
     <artifactId>base-scaffold</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
 <!--    <packaging>pom</packaging>-->
 
