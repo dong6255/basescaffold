@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: base-scaffold
+#  cloud:
+#    config:
+#      uri: ${config.server.uri:http://config-server.paas:8888}
+mybatis-plus:
+  configuration:
+    call-setters-on-nulls: true
+server:
+  port: 8080
+
