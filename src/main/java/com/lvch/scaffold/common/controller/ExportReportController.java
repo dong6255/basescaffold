@@ -19,4 +19,9 @@ public class ExportReportController {
         return "success!";
     }
 
+    @GetMapping("/testtttt")
+    public String test() {
+        return "===============success!============";
+    }
+
 }
