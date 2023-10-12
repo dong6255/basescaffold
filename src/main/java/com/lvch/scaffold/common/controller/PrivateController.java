@@ -1,8 +1,9 @@
 package com.lvch.scaffold.common.controller;
 
+import com.lvch.scaffold.common.domain.vo.response.ApiResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
@@ -16,7 +17,8 @@ import java.util.regex.Pattern;
  */
 @RestController
 @Slf4j
-public class ExportReportController {
+@RequestMapping("/capi/excel")
+public class PrivateController {
 
     private static final Pattern PATTERN = Pattern.compile("(?<province>[^省]+自治区|.*?省|.*?行政区|.*?市)(?<city>[^市]+自治州|.*?地区|.*?行政单位|.+盟|市辖区|.*?市|.*?县)(?<county>[^县]+县|.+区|.+市|.+旗|.+海域|.+岛)?(?<town>[^区]+区|.+镇)?(?<village>.*)");
 
@@ -94,16 +96,9 @@ public class ExportReportController {
         // {province=湖南省, city=长沙市, county=岳麓区, town=, village=永青路668号}
     }
     @GetMapping("/test")
-    public String appExportReport() {
+    public  ApiResult<String> appExportReport() {
         log.error("xxxxxxxxxxx");
-        return "success!";
-    }
-
-    @GetMapping("/testtttt")
-    public String test() {
-        log.info("ccccccccccc");
-
-        return "===============success!============";
+        return ApiResult.success("算你行！");
     }
 
 }
