@@ -1,7 +1,7 @@
 package com.lvch.scaffold.common.constant;
 
 /**
- * @author zhongzb create on 2021/06/10
+ * @author April
  */
 public class RedisKey {
     private static final String BASE_KEY = "basescaffold:";

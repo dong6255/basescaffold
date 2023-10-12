@@ -11,7 +11,7 @@ import java.util.UUID;
 
 /**
  * Description: 设置链路追踪的值，初期单体项目先简单用
- * Author: <a href="https://github.com/zongzibinbin">abin</a>
+ * Author: April
  * Date: 2023-04-05
  */
 @Slf4j
