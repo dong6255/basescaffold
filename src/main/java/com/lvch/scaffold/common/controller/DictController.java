@@ -1,9 +1,11 @@
 package com.lvch.scaffold.common.controller;
 
+import com.lvch.scaffold.common.service.LoginService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +27,9 @@ import java.util.regex.Pattern;
 @RequestMapping("welcome")
 public class DictController {
 
+    @Autowired
+    private LoginService loginService;
+
     @ApiImplicitParam(name = "name",value = "姓名",required = true)
     @ApiOperation(value = "向客人问好")
     @GetMapping("/sayHi")
@@ -33,5 +38,20 @@ public class DictController {
         return ResponseEntity.ok("Hi:"+name);
     }
 
+    @ApiImplicitParam(name = "uid",value = "用户id",required = true)
+    @ApiOperation(value = "测试获取token")
+    @GetMapping("/test/getToken")
+    public ResponseEntity<String> getToken(@RequestParam(value = "uid")Long uid){
+        String token = loginService.login(uid);
+        return ResponseEntity.ok(token);
+    }
+
+    @ApiImplicitParam(name = "token",value = "token",required = true)
+    @ApiOperation(value = "测试验证token并返回uid")
+    @GetMapping("/test/getValidUid")
+    public ResponseEntity<Long> getValidUid(@RequestParam(value = "token")String token){
+        Long uid = loginService.getValidUid(token);
+        return ResponseEntity.ok(uid);
+    }
 
 }
