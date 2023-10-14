@@ -5,7 +5,7 @@ spring:
   application:
     name: basescaffold
   datasource:
-    url: jdbc:mysql://${basescaffold.mysql.ip}:${baseScaffold.mysql.port}/${basescaffold.mysql.db}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://${basescaffold.mysql.ip}:${basescaffold.mysql.port}/${basescaffold.mysql.db}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: ${basescaffold.mysql.username}
     password: ${basescaffold.mysql.password}
     driver-class-name: com.mysql.cj.jdbc.Driver
