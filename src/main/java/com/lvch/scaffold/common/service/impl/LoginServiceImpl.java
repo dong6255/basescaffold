@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Description: 登录相关处理类
- * Author: <a href="https://github.com/zongzibinbin">abin</a>
+ * Author: April
  * Date: 2023-03-19
  */
 @Service

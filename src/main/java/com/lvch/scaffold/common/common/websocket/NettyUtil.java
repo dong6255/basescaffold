@@ -7,7 +7,7 @@ import io.netty.util.AttributeKey;
 
 /**
  * Description: netty工具类
- * Author: <a href="https://github.com/zongzibinbin">abin</a>
+ * Author: April
  * Date: 2023-04-18
  */
 
