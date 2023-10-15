@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONUtil;
 import com.lvch.scaffold.common.domain.enums.WSReqTypeEnum;
+import com.lvch.scaffold.common.domain.vo.request.ws.WSAuthorize;
 import com.lvch.scaffold.common.domain.vo.request.ws.WSBaseReq;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
@@ -51,32 +52,38 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
     //    ctx.channel().close();
     //}
     //
-    ///**
-    // * 心跳检查
-    // *
-    // * @param ctx
-    // * @param evt
-    // * @throws Exception
-    // */
-    //@Override
-    //public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-    //    if (evt instanceof IdleStateEvent) {
-    //        IdleStateEvent idleStateEvent = (IdleStateEvent) evt;
-    //        // 读空闲
-    //        if (idleStateEvent.state() == IdleState.READER_IDLE) {
-    //            // 关闭用户的连接
-    //            userOffLine(ctx);
-    //        }
-    //    } else if (evt instanceof WebSocketServerProtocolHandler.HandshakeComplete) {
-    //        this.webSocketService.connect(ctx.channel());
-    //        String token = NettyUtil.getAttr(ctx.channel(), NettyUtil.TOKEN);
-    //        if (StrUtil.isNotBlank(token)) {
-    //            this.webSocketService.authorize(ctx.channel(), new WSAuthorize(token));
-    //        }
-    //    }
-    //    super.userEventTriggered(ctx, evt);
+    /**
+     * 心跳检查
+     *
+     * @param ctx
+     * @param evt
+     * @throws Exception
+     */
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        if (evt instanceof IdleStateEvent) {
+            IdleStateEvent idleStateEvent = (IdleStateEvent) evt;
+            // 读空闲
+            if (idleStateEvent.state() == IdleState.READER_IDLE) {
+                // 关闭用户的连接
+                //userOffLine(ctx);
+            }
+        }
+        //else if (evt instanceof WebSocketServerProtocolHandler.HandshakeComplete) {
+        //    this.webSocketService.connect(ctx.channel());
+        //    String token = NettyUtil.getAttr(ctx.channel(), NettyUtil.TOKEN);
+        //    if (StrUtil.isNotBlank(token)) {
+        //        this.webSocketService.authorize(ctx.channel(), new WSAuthorize(token));
+        //    }
+        //}
+        super.userEventTriggered(ctx, evt);
+    }
+
+    //private void userOffLine(ChannelHandlerContext ctx) {
+    //    this.webSocketService.removed(ctx.channel());
+    //    ctx.channel().close();
     //}
-    //
+
     // 处理异常
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {

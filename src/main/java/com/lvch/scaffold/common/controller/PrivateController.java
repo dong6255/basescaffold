@@ -41,59 +41,9 @@ public class PrivateController {
         return row;
     }
 
-    public static int distMoney(int money, int children) {
-        if (money < children) {
-            return -1;
-        }
-        money -= children;
-        int cnt = Math.min(money / 7, children);
-        money -= cnt * 7;
-        children -= cnt;
-        if ((children == 0 && money > 0) || (children == 1 && money == 3)) {
-            cnt--;
-        }
-        return cnt;
-
-    }
-
-    public static String dynamicPassword(String password, int target) {
-        String res = "";
-        int n = target + password.length();
-        for(int i = target; i < n; i++) {
-            res += password.charAt(i % password.length());
-        }
-        return res;
-
-    }
-
-    public static int canBeTypedWords(String text, String brokenLetters) {
-        int[] nums = {0,1,2};
-        int[] sortNums = Arrays.stream(nums).sorted().toArray();
-
-        String[] testArgs = text.split(" ");
-        Set<Character> set = new HashSet<>();
-        int ans = 0;
-        for (int i = 0; i < brokenLetters.length(); i++) {
-            set.add(brokenLetters.charAt(i));
-        }
-        for (String testArg : testArgs) {
-            boolean flag = true;
-            for (int i = 0; i < testArg.length(); i++) {
-                if (set.contains(testArg.charAt(i))) {
-                    flag = false;
-                }
-            }
-            ans += flag? 1 : 0;
-        }
-        return ans;
-    }
 
     public static void main(String[] args) {
         String address = "湖南省长沙市岳麓区永青路668号";
-        //distMoney(20, 3);
-        dynamicPassword("password", 4);
-        //System.out.println(getAddressResolution(address));
-        // {province=湖南省, city=长沙市, county=岳麓区, town=, village=永青路668号}
     }
     @GetMapping("/test")
     public  ApiResult<String> appExportReport() {

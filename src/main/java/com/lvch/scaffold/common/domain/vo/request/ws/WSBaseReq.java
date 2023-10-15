@@ -4,7 +4,7 @@ import lombok.Data;
 
 /**
  * Description: websocket前端请求体
- * Author: <a href="https://github.com/zongzibinbin">abin</a>
+ * Author: April
  * Date: 2023-03-19
  */
 @Data

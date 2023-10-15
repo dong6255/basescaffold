@@ -23,7 +23,15 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
-
+wx:
+  mp:
+    #    callback: http://f4cd-113-92-129-127.ngrok.io
+    callback: ${basescaffold.wx.callback}
+    configs:
+      - appId: ${basescaffold.wx.appId} # 第一个公众号的appid
+        secret: ${basescaffold.wx.secret} # 公众号的appsecret
+        token: ${basescaffold.wx.token} # 接口配置里的Token值
+        aesKey: ${basescaffold.wx.aesKey} # 接口配置里的EncodingAESKey值
 logging:
   level:
     org.springframework.web: INFO

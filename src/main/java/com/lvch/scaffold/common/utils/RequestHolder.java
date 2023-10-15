@@ -5,7 +5,7 @@ import com.lvch.scaffold.common.domain.dto.RequestInfo;
 
 /**
  * Description: 请求上下文
- * Author: <a href="https://github.com/zongzibinbin">abin</a>
+ * Author: April
  * Date: 2023-04-05
  */
 public class RequestHolder {
