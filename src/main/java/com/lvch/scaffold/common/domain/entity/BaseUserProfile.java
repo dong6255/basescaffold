@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
 
 /**
  * <p>
@@ -17,10 +18,12 @@ import lombok.EqualsAndHashCode;
  * @author April
  * @since 2023-10-13
  */
+
+@SuperBuilder
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("base_user_profile")
-public class BaseUserProfile implements Serializable {
+public class BaseUserProfile extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -95,45 +98,6 @@ public class BaseUserProfile implements Serializable {
      */
     @TableField("birthday")
     private String birthday;
-
-    /**
-     * 删除标志 0 - 正常 1 - 删除
-     */
-    @TableField("del_flag")
-    private Integer delFlag;
-
-    /**
-     * 版本号
-     */
-    @TableField("version")
-    private Integer version;
-
-    /**
-     * 创建人 登录帐号
-     */
-    @TableField("created_by")
-    private String createdBy;
-
-    /**
-     * 创建时间
-     */
-    @TableField("create_date")
-    private LocalDateTime createDate;
-
-    /**
-     * 修改人  登录的帐号
-     */
-    @TableField("update_by")
-    private String updateBy;
-
-    /**
-     * 修改时间
-     */
-    @TableField("update_date")
-    private LocalDateTime updateDate;
-
-    @TableField("create_by")
-    private String createBy;
 
 
 }

@@ -1,11 +1,16 @@
 package com.lvch.scaffold.common.controller;
 
+import com.lvch.scaffold.common.domain.vo.request.RegisterRequest;
 import com.lvch.scaffold.common.domain.vo.response.ApiResult;
+import com.lvch.scaffold.common.service.IBaseLoginAccountAuthService;
+import com.lvch.scaffold.common.service.LoginService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,6 +24,9 @@ import java.util.regex.Pattern;
 @Slf4j
 @RequestMapping("/capi/excel")
 public class PrivateController {
+
+    @Autowired
+    private LoginService loginService;
 
     private static final Pattern PATTERN = Pattern.compile("(?<province>[^省]+自治区|.*?省|.*?行政区|.*?市)(?<city>[^市]+自治州|.*?地区|.*?行政单位|.+盟|市辖区|.*?市|.*?县)(?<county>[^县]+县|.+区|.+市|.+旗|.+海域|.+岛)?(?<town>[^区]+区|.+镇)?(?<village>.*)");
 

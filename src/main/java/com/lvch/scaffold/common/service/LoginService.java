@@ -1,5 +1,8 @@
 package com.lvch.scaffold.common.service;
 
+import com.lvch.scaffold.common.domain.vo.request.RegisterRequest;
+import com.lvch.scaffold.common.domain.vo.response.ApiResult;
+
 /**
  * Description: 登录相关处理类
  * Author: April
@@ -38,5 +41,7 @@ public interface LoginService {
      * @return
      */
     Long getValidUid(String token);
+
+    ApiResult<Object> register(RegisterRequest registerRequest);
 
 }
