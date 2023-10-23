@@ -1,17 +1,18 @@
 package com.lvch.scaffold.common.controller;
 
+import com.lvch.scaffold.common.domain.vo.request.RegisterRequest;
 import com.lvch.scaffold.common.domain.vo.response.ApiResult;
 import com.lvch.scaffold.common.service.LoginService;
 import com.lvch.scaffold.common.utils.AssertUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author chunhelv
@@ -50,6 +51,14 @@ public class WelcomeController {
         Long uid = loginService.getValidUid(token);
         AssertUtil.isNotEmpty(uid, "你谁啊？");
         return ApiResult.success(uid);
+    }
+
+    @RequestMapping(value = "/userRegister", method = RequestMethod.POST)
+    @ApiOperation(value = "用户注册", httpMethod = "POST", response = ApiResult.class, notes = "用户注册")
+    public ApiResult<Object> userRegister(
+            @ApiParam(required = true, name = "registerRequest", value = "用户注册数据") @RequestBody RegisterRequest req,
+            HttpServletRequest request) {
+        return loginService.register(req);
     }
 
 }

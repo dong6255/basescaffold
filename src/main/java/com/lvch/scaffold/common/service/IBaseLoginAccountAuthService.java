@@ -13,4 +13,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IBaseLoginAccountAuthService{
 
+    void findByLoginId(String loginId);
+
 }

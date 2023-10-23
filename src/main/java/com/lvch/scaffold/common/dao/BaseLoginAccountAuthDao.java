@@ -17,4 +17,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class BaseLoginAccountAuthDao extends ServiceImpl<BaseLoginAccountAuthMapper, BaseLoginAccountAuth>{
 
+    public Integer findCountByLoginId(String loginId) {
+        return lambdaQuery()
+                .eq(BaseLoginAccountAuth::getLoginId, loginId)
+                .count();
+    }
+
 }
