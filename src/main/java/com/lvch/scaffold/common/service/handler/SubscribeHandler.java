@@ -1,5 +1,7 @@
 package com.lvch.scaffold.common.service.handler;
 
+import com.lvch.scaffold.common.service.WxMsgService;
+import com.lvch.scaffold.common.service.adapter.TextBuilder;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.common.session.WxSessionManager;
 import me.chanjar.weixin.mp.api.WxMpService;
@@ -15,8 +17,8 @@ import java.util.Map;
  */
 @Component
 public class SubscribeHandler extends AbstractHandler {
-    //@Autowired
-    //private WxMsgService wxMsgService;
+    @Autowired
+    private WxMsgService wxMsgService;
 
     @Override
     public WxMpXmlOutMessage handle(WxMpXmlMessage wxMessage,
@@ -37,7 +39,7 @@ public class SubscribeHandler extends AbstractHandler {
         }
 
         try {
-            //return new TextBuilder().build("感谢关注", wxMessage, weixinService);
+            return new TextBuilder().build("感谢关注", wxMessage, weixinService);
         } catch (Exception e) {
             this.logger.error(e.getMessage(), e);
         }
@@ -50,8 +52,7 @@ public class SubscribeHandler extends AbstractHandler {
      */
     private WxMpXmlOutMessage handleSpecial(WxMpService weixinService, WxMpXmlMessage wxMessage)
             throws Exception {
-        //return wxMsgService.scan(weixinService, wxMessage);
-        return null;
+        return wxMsgService.scan(weixinService, wxMessage);
     }
 
 }
