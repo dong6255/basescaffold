@@ -1,5 +1,6 @@
 package com.lvch.scaffold.common.controller;
 
+import com.lvch.scaffold.common.service.WxMsgService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
@@ -11,6 +12,7 @@ import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -27,6 +29,8 @@ public class WxPortalController {
 
     private final WxMpService wxService;
     private final WxMpMessageRouter messageRouter;
+    @Autowired
+    private WxMsgService wxMsgService;
 
     @GetMapping("/getQRcode")
     public void getQRcode (@RequestParam(name = "code", required = false) String code) throws WxErrorException {
@@ -60,7 +64,7 @@ public class WxPortalController {
         try {
             WxOAuth2AccessToken accessToken = wxService.getOAuth2Service().getAccessToken(code);
             WxOAuth2UserInfo userInfo = wxService.getOAuth2Service().getUserInfo(accessToken, "zh_CN");
-            //wxMsgService.authorize(userInfo);
+            wxMsgService.authorize(userInfo);
             System.out.println(userInfo);
         } catch (Exception e) {
             log.error("callBack error", e);

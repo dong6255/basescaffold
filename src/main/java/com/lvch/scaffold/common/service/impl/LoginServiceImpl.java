@@ -119,13 +119,13 @@ public class LoginServiceImpl implements LoginService {
             boolean addUserAccountFlag = userAccountDao.save(userAccountDTO);
             AssertUtil.isTrue(addUserAccountFlag, "新增失败");
             Long userAccountSid = userAccountDTO.getSid();
-
-            // 3.添加用户基础信息
-            BaseUserProfile userProfileDTO = BaseUserProfile.builder().mobilePhone(loginId).userAccountSid(userAccountSid).userName(loginId).build();
-            boolean addUserProfileFlag = userProfileDao.save(userProfileDTO);
-            AssertUtil.isTrue(addUserProfileFlag, "新增失败");
-            //Long userAccountSid = userAccountDTO.getSid();
-
+            //
+            //// 3.添加用户基础信息
+            //BaseUserProfile userProfileDTO = BaseUserProfile.builder().mobilePhone(loginId).userAccountSid(userAccountSid).userName(loginId).build();
+            //boolean addUserProfileFlag = userProfileDao.save(userProfileDTO);
+            //AssertUtil.isTrue(addUserProfileFlag, "新增失败");
+            ////Long userAccountSid = userAccountDTO.getSid();
+            //
             // 4.添加用户登录鉴权信息
             BaseLoginAccountAuth loginAccountAuthDTO = BaseLoginAccountAuth.builder().userAccountSid(userAccountSid).loginId(loginId).loginType(registerRequest.getLoginType()).loginStatus(0).password(registerRequest.getPassword()).build();
             boolean addLoginAccountAuthFlag = loginAccountAuthDao.save(loginAccountAuthDTO);

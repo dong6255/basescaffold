@@ -6,6 +6,7 @@ import cn.hutool.json.JSONUtil;
 import com.lvch.scaffold.common.domain.enums.WSReqTypeEnum;
 import com.lvch.scaffold.common.domain.vo.request.ws.WSAuthorize;
 import com.lvch.scaffold.common.domain.vo.request.ws.WSBaseReq;
+import com.lvch.scaffold.common.service.WebSocketService;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -14,44 +15,27 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 @Slf4j
 @Sharable
 public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
+
+    private WebSocketService webSocketService;
     //
-    //private WebSocketService webSocketService;
+    // 当web客户端连接后，触发该方法
+    @Override
+    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+        this.webSocketService = getService();
+    }
     //
-    //// 当web客户端连接后，触发该方法
-    //@Override
-    //public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
-    //    this.webSocketService = getService();
-    //}
-    //
-    //// 客户端离线
-    //@Override
-    //public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-    //    userOffLine(ctx);
-    //}
-    //
-    ///**
-    // * 取消绑定
-    // *
-    // * @param ctx
-    // * @throws Exception
-    // */
-    //@Override
-    //public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-    //    // 可能出现业务判断离线后再次触发 channelInactive
-    //    log.warn("触发 channelInactive 掉线![{}]", ctx.channel().id());
-    //    userOffLine(ctx);
-    //}
-    //
-    //private void userOffLine(ChannelHandlerContext ctx) {
-    //    this.webSocketService.removed(ctx.channel());
-    //    ctx.channel().close();
-    //}
-    //
+    // 客户端离线
+    @Override
+    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+        userOffLine(ctx);
+    }
+
     /**
      * 心跳检查
      *
@@ -79,10 +63,23 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
         super.userEventTriggered(ctx, evt);
     }
 
-    //private void userOffLine(ChannelHandlerContext ctx) {
-    //    this.webSocketService.removed(ctx.channel());
-    //    ctx.channel().close();
-    //}
+    private void userOffLine(ChannelHandlerContext ctx) {
+        this.webSocketService.removed(ctx.channel());
+        ctx.channel().close();
+    }
+
+    /**
+     * 取消绑定
+     *
+     * @param ctx
+     * @throws Exception
+     */
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        // 可能出现业务判断离线后再次触发 channelInactive
+        log.warn("触发 channelInactive 掉线![{}]", ctx.channel().id());
+        userOffLine(ctx);
+    }
 
     // 处理异常
     @Override
@@ -91,9 +88,9 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
         ctx.channel().close();
     }
 
-    //private WebSocketService getService() {
-    //    return SpringUtil.getBean(WebSocketService.class);
-    //}
+    private WebSocketService getService() {
+        return SpringUtil.getBean(WebSocketService.class);
+    }
 
     // 读取客户端发送的请求报文
     @Override
@@ -102,9 +99,7 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
         WSReqTypeEnum wsReqTypeEnum = WSReqTypeEnum.of(wsBaseReq.getType());
         switch (wsReqTypeEnum) {
             case LOGIN:
-                //this.webSocketService.handleLoginReq(ctx.channel());
-                log.info("请求二维码 = " + msg.text());
-                ctx.channel().writeAndFlush(new TextWebSocketFrame("成功了啊"));
+                this.webSocketService.handleLoginReq(ctx.channel());
                 break;
             case HEARTBEAT:
                 break;
