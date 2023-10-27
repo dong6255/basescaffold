@@ -25,4 +25,11 @@ public interface WebSocketService {
      * @param channel
      */
     void removed(Channel channel);
+
+    /**
+     * 扫码用户登录成功通知,清除本地Cache中的loginCode和channel的关系
+     */
+    Boolean scanLoginSuccess(Integer loginCode, Long uid);
+
+    void waitAuthorize(Integer loginCode);
 }
