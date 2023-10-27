@@ -8,9 +8,13 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.lvch.scaffold.common.common.websocket.NettyUtil;
 import com.lvch.scaffold.common.config.ThreadPoolConfig;
 import com.lvch.scaffold.common.constant.RedisKey;
+import com.lvch.scaffold.common.dao.UserDao;
 import com.lvch.scaffold.common.domain.dto.WSChannelExtraDTO;
+import com.lvch.scaffold.common.domain.entity.User;
 import com.lvch.scaffold.common.domain.enums.WSBaseResp;
+import com.lvch.scaffold.common.domain.enums.WSRespTypeEnum;
 import com.lvch.scaffold.common.domain.vo.request.ws.WSAuthorize;
+import com.lvch.scaffold.common.domain.vo.response.ws.WSLoginSuccess;
 import com.lvch.scaffold.common.service.LoginService;
 import com.lvch.scaffold.common.service.WebSocketService;
 import com.lvch.scaffold.common.service.adapter.WSAdapter;
@@ -75,6 +79,8 @@ public class WebSocketServiceImpl implements WebSocketService {
     private WxMpService wxMpService;
     @Autowired
     private LoginService loginService;
+    @Autowired
+    private UserDao userDao;
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
     @Autowired
@@ -161,21 +167,53 @@ public class WebSocketServiceImpl implements WebSocketService {
     //
 
 
-    //@Override
-    //public Boolean scanLoginSuccess(Integer loginCode, Long uid) {
-    //    //确认连接在该机器
-    //    Channel channel = WAIT_LOGIN_MAP.getIfPresent(loginCode);
-    //    if (Objects.isNull(channel)) {
-    //        return Boolean.FALSE;
+    @Override
+    public Boolean scanLoginSuccess(Integer loginCode, Long uid) {
+        //确认连接在该机器
+        Channel channel = WAIT_LOGIN_MAP.getIfPresent(loginCode);
+        if (Objects.isNull(channel)) {
+            return Boolean.FALSE;
+        }
+        User user = userDao.getById(uid);
+        //移除code
+        WAIT_LOGIN_MAP.invalidate(loginCode);
+        //调用用户登录模块
+        String token = loginService.login(uid);
+        //用户登录
+        //loginSuccess(channel, user, token);
+        sendMsg(channel, WSAdapter.buildLoginSuccessResp(user, token, false));
+
+        return Boolean.TRUE;
+    }
+
+    @Override
+    public void waitAuthorize(Integer loginCode) {
+        //确认连接在该机器
+        Channel channel = WAIT_LOGIN_MAP.getIfPresent(loginCode);
+        if (Objects.isNull(channel)) {
+            return;
+        }
+        sendMsg(channel, WSAdapter.buildScanSuccessResp());
+
+    }
+
+    /**
+     * (channel必在本地)登录成功，并更新状态
+     */
+    //private void loginSuccess(Channel channel, User user, String token) {
+    //    //更新上线列表
+    //    //online(channel, user.getId());
+    //    //返回给用户登录成功
+    //    //boolean hasPower = iRoleService.hasPower(user.getId(), RoleEnum.CHAT_MANAGER);
+    //    //发送给对应的用户
+    //    //sendMsg(channel, WSAdapter.buildLoginSuccessResp(user, token, hasPower));
+    //    //发送用户上线事件
+    //    boolean online = userCache.isOnline(user.getId());
+    //    if (!online) {
+    //        user.setLastOptTime(new Date());
+    //        user.refreshIp(NettyUtil.getAttr(channel, NettyUtil.IP));
+    //        applicationEventPublisher.publishEvent(new UserOnlineEvent(this, user));
     //    }
-    //    User user = userDao.getById(uid);
-    //    //移除code
-    //    WAIT_LOGIN_MAP.invalidate(loginCode);
-    //    //调用用户登录模块
-    //    String token = loginService.login(uid);
-    //    //用户登录
-    //    loginSuccess(channel, user, token);
-    //    return Boolean.TRUE;
     //}
     //
     //@Override

@@ -8,6 +8,7 @@ import com.lvch.scaffold.common.dao.BaseUserProfileDao;
 import com.lvch.scaffold.common.domain.entity.BaseLoginAccountAuth;
 import com.lvch.scaffold.common.domain.entity.BaseUserAccount;
 import com.lvch.scaffold.common.domain.entity.BaseUserProfile;
+import com.lvch.scaffold.common.domain.entity.User;
 import com.lvch.scaffold.common.domain.vo.request.RegisterRequest;
 import com.lvch.scaffold.common.domain.vo.response.ApiResult;
 import com.lvch.scaffold.common.service.IBaseLoginAccountAuthService;
@@ -119,6 +120,10 @@ public class LoginServiceImpl implements LoginService {
             boolean addUserAccountFlag = userAccountDao.save(userAccountDTO);
             AssertUtil.isTrue(addUserAccountFlag, "新增失败");
             Long userAccountSid = userAccountDTO.getSid();
+            //todo BaseUserAccount和 BaseUserProfile删除，数据统一放在User表下
+            //todo User表的sid就是用户的uid
+
+
             //
             //// 3.添加用户基础信息
             //BaseUserProfile userProfileDTO = BaseUserProfile.builder().mobilePhone(loginId).userAccountSid(userAccountSid).userName(loginId).build();

@@ -16,6 +16,7 @@ import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +38,7 @@ public class WxMsgService {
      * 用户的openId和前端登录场景code的映射关系
      */
     private static final String URL = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
+
     @Value("${wx.mp.callback}")
     private String callback;
 
@@ -46,6 +48,10 @@ public class WxMsgService {
     @Autowired
     private UserDao userDao;
 
+    @Lazy
+    @Autowired
+    private WebSocketService webSocketService;
+
     public WxMpXmlOutMessage scan(WxMpService wxMpService, WxMpXmlMessage wxMpXmlMessage) {
         //获取openId
         String openid = wxMpXmlMessage.getFromUser();
@@ -53,6 +59,7 @@ public class WxMsgService {
         User user = userDao.getByOpenId(openid);
         //如果已经注册,直接登录成功
         if (Objects.nonNull(user) && StringUtils.isNotEmpty(user.getAvatar())) {
+            webSocketService.scanLoginSuccess(loginCode, user.getId());
             return null;
         }
 
@@ -65,6 +72,7 @@ public class WxMsgService {
         //在redis中保存openid和场景code的关系，后续才能通知到前端,设置了过期时间
         RedisUtils.set(RedisKey.getKey(RedisKey.OPEN_ID_STRING, openid), loginCode, 60, TimeUnit.MINUTES);
         //授权流程,给用户发送授权消息，并且异步通知前端扫码成功,等待授权
+        webSocketService.waitAuthorize(loginCode);
         String skipUrl = String.format(URL, wxMpService.getWxMpConfigStorage().getAppId(), URLEncoder.encode(callback + "/wx/portal/public/callBack"));
         WxMpXmlOutMessage.TEXT().build();
         return new TextBuilder().build("请点击链接授权：<a href=\"" + skipUrl + "\">登录</a>", wxMpXmlMessage, wxMpService);
@@ -87,12 +95,15 @@ public class WxMsgService {
             fillUserInfo(user.getId(), userInfo);
         }
         //找到对应的code
-        //Integer code = RedisUtils.get(RedisKey.getKey(RedisKey.OPEN_ID_STRING, userInfo.getOpenid()), Integer.class);
+        Integer code = RedisUtils.get(RedisKey.getKey(RedisKey.OPEN_ID_STRING, userInfo.getOpenid()), Integer.class);
         //todo 发送登录成功事件
+        webSocketService.scanLoginSuccess(code, user.getId());
+
     }
 
     private void fillUserInfo(Long uid, WxOAuth2UserInfo userInfo) {
         User update = UserAdapter.buildAuthorizeUser(uid, userInfo);
+        //todo 简单的重试补偿，如果名称重复 retry逻辑以后修改
         for (int i = 0; i < 5; i++) {
             try {
                 userDao.updateById(update);
