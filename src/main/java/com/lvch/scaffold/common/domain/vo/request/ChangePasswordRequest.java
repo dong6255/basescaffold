@@ -33,11 +33,7 @@ public class ChangePasswordRequest {
 
     @NotBlank
     @ApiModelProperty(value = "旧密码")
-<<<<<<< HEAD
     private String oldPassword;
-=======
-    private Integer oldPassword;
->>>>>>> origin/feature/public
 
     @NotBlank
     @ApiModelProperty(value = "新密码")
