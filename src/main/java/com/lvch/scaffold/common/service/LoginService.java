@@ -1,5 +1,6 @@
 package com.lvch.scaffold.common.service;
 
+import com.lvch.scaffold.common.domain.vo.request.ChangePasswordRequest;
 import com.lvch.scaffold.common.domain.vo.request.RegisterRequest;
 import com.lvch.scaffold.common.domain.vo.response.ApiResult;
 
@@ -43,5 +44,7 @@ public interface LoginService {
     Long getValidUid(String token);
 
     ApiResult<Object> register(RegisterRequest registerRequest);
+
+    ApiResult<Object> changePassword(ChangePasswordRequest changePasswordRequest);
 
 }
