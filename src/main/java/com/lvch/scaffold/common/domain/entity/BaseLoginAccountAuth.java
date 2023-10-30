@@ -6,8 +6,11 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 /**
@@ -22,6 +25,8 @@ import lombok.experimental.SuperBuilder;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("base_login_account_auth")
+@AllArgsConstructor //全参构造函数
+@NoArgsConstructor //空参构造函数
 public class BaseLoginAccountAuth extends BaseEntity implements Serializable{
 
     private static final long serialVersionUID = 1L;

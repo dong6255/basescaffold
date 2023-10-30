@@ -1,5 +1,6 @@
 package com.lvch.scaffold.common.controller;
 
+import com.lvch.scaffold.common.domain.vo.request.ChangePasswordRequest;
 import com.lvch.scaffold.common.domain.vo.request.RegisterRequest;
 import com.lvch.scaffold.common.domain.vo.response.ApiResult;
 import com.lvch.scaffold.common.service.LoginService;
@@ -59,6 +60,14 @@ public class WelcomeController {
             @ApiParam(required = true, name = "registerRequest", value = "用户注册数据") @RequestBody RegisterRequest req,
             HttpServletRequest request) {
         return loginService.register(req);
+    }
+
+    @RequestMapping(value = "/userChangePassword", method = RequestMethod.POST)
+    @ApiOperation(value = "用户修改密码", httpMethod = "POST", response = ApiResult.class, notes = "用户修改密码")
+    public ApiResult<Object> userChangePassword(
+            @ApiParam(required = true, name = "changePasswordRequest", value = "用户修改密码数据") @RequestBody ChangePasswordRequest req,
+            HttpServletRequest request) {
+        return loginService.changePassword(req);
     }
 
 }

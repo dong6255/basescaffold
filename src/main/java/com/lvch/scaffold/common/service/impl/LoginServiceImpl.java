@@ -9,6 +9,7 @@ import com.lvch.scaffold.common.domain.entity.BaseLoginAccountAuth;
 import com.lvch.scaffold.common.domain.entity.BaseUserAccount;
 import com.lvch.scaffold.common.domain.entity.BaseUserProfile;
 import com.lvch.scaffold.common.domain.entity.User;
+import com.lvch.scaffold.common.domain.vo.request.ChangePasswordRequest;
 import com.lvch.scaffold.common.domain.vo.request.RegisterRequest;
 import com.lvch.scaffold.common.domain.vo.response.ApiResult;
 import com.lvch.scaffold.common.service.IBaseLoginAccountAuthService;
@@ -137,6 +138,26 @@ public class LoginServiceImpl implements LoginService {
             AssertUtil.isTrue(addLoginAccountAuthFlag, "新增失败");
 
         } catch (Exception e) {
+            log.error(e.getMessage());
+            return ApiResult.fail(500, "系统异常");
+        }
+        return ApiResult.success();
+    }
+
+    @Override
+    public ApiResult<Object> changePassword(ChangePasswordRequest changePasswordRequest) {
+        try {
+            // 1.判断登录ID（登录账号）是否存在
+            String loginId = changePasswordRequest.getAccount();
+            AssertUtil.equal(loginAccountAuthDao.findCountByLoginId(loginId), 1, "账号不存在,请重新输入!！");
+
+            // 2.校验旧密码
+            BaseLoginAccountAuth loginAccountAuthDTO = loginAccountAuthDao.findByLoginId(loginId);
+            AssertUtil.equal(loginAccountAuthDTO.getPassword(),changePasswordRequest.getOldPassword(),"与旧密码不符，请重新输入!!");
+            // 3.修改密码
+            boolean changeFlag = loginAccountAuthDao.updatePassword(changePasswordRequest.getNewPassword(),loginId);
+            AssertUtil.isTrue(changeFlag, "修改失败");
+        }catch (Exception e) {
             log.error(e.getMessage());
             return ApiResult.fail(500, "系统异常");
         }
