@@ -3,7 +3,9 @@ package com.lvch.scaffold.common.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.lvch.scaffold.common.dao.UserDao;
 import com.lvch.scaffold.common.domain.entity.User;
+import com.lvch.scaffold.common.domain.vo.response.user.UserInfoResp;
 import com.lvch.scaffold.common.service.UserService;
+import com.lvch.scaffold.common.service.adapter.UserAdapter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -36,6 +38,12 @@ public class UserServiceImpl implements UserService {
 
         //todo 这里的用户表还没和登录账户表关联在一起，需要修改
         userDao.save(user);
+    }
+
+    @Override
+    public UserInfoResp getUserInfo(Long uid) {
+        User userInfo = userDao.getById(uid);
+        return UserAdapter.buildUserInfoResp(userInfo, 1);
     }
 
 }

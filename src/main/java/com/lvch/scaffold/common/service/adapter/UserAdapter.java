@@ -5,6 +5,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 
 import com.lvch.scaffold.common.domain.entity.User;
+import com.lvch.scaffold.common.domain.vo.response.user.UserInfoResp;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 
@@ -40,6 +41,13 @@ public class UserAdapter {
             user.setName(userInfo.getNickname());
         }
         return user;
+    }
+
+    public static UserInfoResp buildUserInfoResp(User userInfo, Integer countByValidItemId) {
+        UserInfoResp userInfoResp = new UserInfoResp();
+        BeanUtil.copyProperties(userInfo, userInfoResp);
+        userInfoResp.setModifyNameChance(countByValidItemId);
+        return userInfoResp;
     }
 
 
