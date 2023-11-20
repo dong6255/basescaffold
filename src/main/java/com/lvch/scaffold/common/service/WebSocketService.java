@@ -32,4 +32,8 @@ public interface WebSocketService {
     Boolean scanLoginSuccess(Integer loginCode, Long uid);
 
     void waitAuthorize(Integer loginCode);
+
+    void sendToAllOnline(WSBaseResp<?> wsBaseResp, Long skipUid);
+
+    Boolean scanSuccess(Integer loginCode);
 }

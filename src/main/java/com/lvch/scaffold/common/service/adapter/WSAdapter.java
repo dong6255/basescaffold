@@ -3,8 +3,10 @@ package com.lvch.scaffold.common.service.adapter;
 import cn.hutool.core.bean.BeanUtil;
 
 import com.lvch.scaffold.common.domain.entity.User;
+import com.lvch.scaffold.common.domain.enums.ChatActiveStatusEnum;
 import com.lvch.scaffold.common.domain.enums.WSBaseResp;
 import com.lvch.scaffold.common.domain.enums.WSRespTypeEnum;
+import com.lvch.scaffold.common.domain.vo.response.ChatMessageResp;
 import com.lvch.scaffold.common.domain.vo.response.ws.*;
 import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
 import org.springframework.beans.BeanUtils;
@@ -42,9 +44,36 @@ public class WSAdapter {
         return wsBaseResp;
     }
 
+    public WSBaseResp<WSOnlineOfflineNotify> buildOfflineNotifyResp(User user) {
+        WSBaseResp<WSOnlineOfflineNotify> wsBaseResp = new WSBaseResp<>();
+        wsBaseResp.setType(WSRespTypeEnum.ONLINE_OFFLINE_NOTIFY.getType());
+        WSOnlineOfflineNotify onlineOfflineNotify = new WSOnlineOfflineNotify();
+        onlineOfflineNotify.setChangeList(Collections.singletonList(buildOfflineInfo(user)));
+        //assembleNum(onlineOfflineNotify);
+        wsBaseResp.setData(onlineOfflineNotify);
+        return wsBaseResp;
+    }
+
+
+    private static ChatMemberResp buildOfflineInfo(User user) {
+        ChatMemberResp info = new ChatMemberResp();
+        BeanUtil.copyProperties(user, info);
+        info.setUid(user.getId());
+        info.setActiveStatus(ChatActiveStatusEnum.OFFLINE.getStatus());
+        info.setLastOptTime(user.getLastOptTime());
+        return info;
+    }
+
     public static WSBaseResp buildScanSuccessResp() {
         WSBaseResp wsBaseResp = new WSBaseResp();
         wsBaseResp.setType(WSRespTypeEnum.LOGIN_SCAN_SUCCESS.getType());
+        return wsBaseResp;
+    }
+
+    public static WSBaseResp<ChatMessageResp> buildMsgSend(ChatMessageResp msgResp) {
+        WSBaseResp<ChatMessageResp> wsBaseResp = new WSBaseResp<>();
+        wsBaseResp.setType(WSRespTypeEnum.MESSAGE.getType());
+        wsBaseResp.setData(msgResp);
         return wsBaseResp;
     }
 

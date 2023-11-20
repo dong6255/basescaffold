@@ -12,15 +12,12 @@ import com.lvch.scaffold.common.dao.UserDao;
 import com.lvch.scaffold.common.domain.dto.WSChannelExtraDTO;
 import com.lvch.scaffold.common.domain.entity.User;
 import com.lvch.scaffold.common.domain.enums.WSBaseResp;
-import com.lvch.scaffold.common.domain.enums.WSRespTypeEnum;
-import com.lvch.scaffold.common.domain.vo.request.ws.WSAuthorize;
-import com.lvch.scaffold.common.domain.vo.response.ws.WSLoginSuccess;
+import com.lvch.scaffold.common.event.UserOfflineEvent;
 import com.lvch.scaffold.common.service.LoginService;
 import com.lvch.scaffold.common.service.WebSocketService;
 import com.lvch.scaffold.common.service.adapter.WSAdapter;
 import com.lvch.scaffold.common.utils.RedisUtils;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -139,7 +136,10 @@ public class WebSocketServiceImpl implements WebSocketService {
                 .map(WSChannelExtraDTO::getUid);
         boolean offlineAll = offline(channel, uidOptional);
         if (uidOptional.isPresent() && offlineAll) {//已登录用户断连,并且全下线成功
-            //todo 用户下线
+            User user = new User();
+            user.setId(uidOptional.get());
+            user.setLastOptTime(new Date());
+            applicationEventPublisher.publishEvent(new UserOfflineEvent(this, user));
         }
     }
 
@@ -149,7 +149,16 @@ public class WebSocketServiceImpl implements WebSocketService {
      */
     private boolean offline(Channel channel, Optional<Long> uidOptional) {
         ONLINE_WS_MAP.remove(channel);
-        //todo 用户下线
+        if (uidOptional.isPresent()) {
+            //根据uid获取用户的多个channel
+            CopyOnWriteArrayList<Channel> channels = ONLINE_UID_MAP.get(uidOptional.get());
+            if (CollectionUtil.isNotEmpty(channels)) {
+                //移除当前用户的channel
+                channels.removeIf(ch -> Objects.equals(ch, channel));
+            }
+            //判断用户所有channel是否都已经移除，false说明用户还有其他设备的登录未退出
+            return CollectionUtil.isEmpty(ONLINE_UID_MAP.get(uidOptional.get()));
+        }
         return true;
     }
 
@@ -166,6 +175,38 @@ public class WebSocketServiceImpl implements WebSocketService {
     //}
     //
 
+    private void loginSuccess(Channel channel, User user, String token) {
+        //更新上线列表
+        online(channel, user.getId());
+        ////返回给用户登录成功
+        //boolean hasPower = iRoleService.hasPower(user.getId(), RoleEnum.CHAT_MANAGER);
+        //发送给对应的用户
+        sendMsg(channel, WSAdapter.buildLoginSuccessResp(user, token, false));
+        //发送用户上线事件
+        //boolean online = userCache.isOnline(user.getId());
+        //if (!online) {
+        //    user.setLastOptTime(new Date());
+        //    user.refreshIp(NettyUtil.getAttr(channel, NettyUtil.IP));
+        //    applicationEventPublisher.publishEvent(new UserOnlineEvent(this, user));
+        //}
+    }
+
+    private WSChannelExtraDTO getOrInitChannelExt(Channel channel) {
+        WSChannelExtraDTO wsChannelExtraDTO =
+                ONLINE_WS_MAP.getOrDefault(channel, new WSChannelExtraDTO());
+        WSChannelExtraDTO old = ONLINE_WS_MAP.putIfAbsent(channel, wsChannelExtraDTO);
+        return ObjectUtil.isNull(old) ? wsChannelExtraDTO : old;
+    }
+
+    /**
+     * 用户上线
+     */
+    private void online(Channel channel, Long uid) {
+        getOrInitChannelExt(channel).setUid(uid);
+        ONLINE_UID_MAP.putIfAbsent(uid, new CopyOnWriteArrayList<>());
+        ONLINE_UID_MAP.get(uid).add(channel);
+        NettyUtil.setAttr(channel, NettyUtil.UID, uid);
+    }
 
     @Override
     public Boolean scanLoginSuccess(Integer loginCode, Long uid) {
@@ -180,8 +221,7 @@ public class WebSocketServiceImpl implements WebSocketService {
         //调用用户登录模块
         String token = loginService.login(uid);
         //用户登录
-        //loginSuccess(channel, user, token);
-        sendMsg(channel, WSAdapter.buildLoginSuccessResp(user, token, false));
+        loginSuccess(channel, user, token);
 
         return Boolean.TRUE;
     }
@@ -197,35 +237,26 @@ public class WebSocketServiceImpl implements WebSocketService {
 
     }
 
-    /**
-     * (channel必在本地)登录成功，并更新状态
-     */
-    //private void loginSuccess(Channel channel, User user, String token) {
-    //    //更新上线列表
-    //    //online(channel, user.getId());
-    //    //返回给用户登录成功
-    //    //boolean hasPower = iRoleService.hasPower(user.getId(), RoleEnum.CHAT_MANAGER);
-    //    //发送给对应的用户
-    //    //sendMsg(channel, WSAdapter.buildLoginSuccessResp(user, token, hasPower));
-    //    //发送用户上线事件
-    //    boolean online = userCache.isOnline(user.getId());
-    //    if (!online) {
-    //        user.setLastOptTime(new Date());
-    //        user.refreshIp(NettyUtil.getAttr(channel, NettyUtil.IP));
-    //        applicationEventPublisher.publishEvent(new UserOnlineEvent(this, user));
-    //    }
-    //}
-    //
-    //@Override
-    //public Boolean scanSuccess(Integer loginCode) {
-    //    Channel channel = WAIT_LOGIN_MAP.getIfPresent(loginCode);
-    //    if (Objects.nonNull(channel)) {
-    //        sendMsg(channel, WSAdapter.buildScanSuccessResp());
-    //        return Boolean.TRUE;
-    //    }
-    //    return Boolean.FALSE;
-    //}
+    @Override
+    public void sendToAllOnline(WSBaseResp<?> wsBaseResp, Long skipUid) {
+        ONLINE_WS_MAP.forEach((channel, ext) -> {
+            log.info(String.valueOf(ext.getUid()));
+            if (Objects.nonNull(skipUid) && Objects.equals(ext.getUid(), skipUid)) {
+                return;
+            }
+            threadPoolTaskExecutor.execute(() -> sendMsg(channel, wsBaseResp));
+        });
+    }
 
+    @Override
+    public Boolean scanSuccess(Integer loginCode) {
+        Channel channel = WAIT_LOGIN_MAP.getIfPresent(loginCode);
+        if (Objects.nonNull(channel)) {
+            sendMsg(channel, WSAdapter.buildScanSuccessResp());
+            return Boolean.TRUE;
+        }
+        return Boolean.FALSE;
+    }
 
     /**
      * 给本地channel发送消息
