@@ -22,6 +22,21 @@ public class RedisKey {
     public static final String USER_SUMMARY_STRING = "userSummary:uid_%d";
 
     /**
+     * 用户信息
+     */
+    public static final String USER_INFO_STRING = "userInfo:uid_%d";
+
+    /**
+     * 在线用户列表
+     */
+    public static final String ONLINE_UID_ZET = "online";
+
+    /**
+     * 离线用户列表
+     */
+    public static final String OFFLINE_UID_ZET = "offline";
+
+    /**
      * 保存Open id
      */
     public static final String OPEN_ID_STRING = "openid:%s";
