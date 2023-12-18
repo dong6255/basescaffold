@@ -1,8 +1,8 @@
 package com.lvch.scaffold.common.dao;
 
-import com.abin.mallchat.common.user.domain.entity.UserRole;
-import com.abin.mallchat.common.user.mapper.UserRoleMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lvch.scaffold.common.domain.entity.UserRole;
+import com.lvch.scaffold.common.mapper.UserRoleMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

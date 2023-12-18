@@ -1,5 +1,7 @@
 package com.lvch.scaffold.common.service.cache;
 
+import com.lvch.scaffold.common.dao.ItemConfigDao;
+import com.lvch.scaffold.common.domain.entity.ItemConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;

@@ -1,8 +1,8 @@
 package com.lvch.scaffold.common.dao;
 
-import com.abin.mallchat.common.user.domain.entity.UserEmoji;
-import com.abin.mallchat.common.user.mapper.UserEmojiMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lvch.scaffold.common.domain.entity.UserEmoji;
+import com.lvch.scaffold.common.mapper.UserEmojiMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

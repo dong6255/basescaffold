@@ -1,8 +1,8 @@
 package com.lvch.scaffold.common.domain.entity.msg;
 
-import com.abin.mallchat.common.common.utils.discover.domain.UrlInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.lvch.scaffold.common.domain.dto.UrlInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

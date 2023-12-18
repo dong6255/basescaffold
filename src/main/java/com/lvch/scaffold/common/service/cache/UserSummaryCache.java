@@ -1,11 +1,15 @@
 package com.lvch.scaffold.common.service.cache;
 
-import com.abin.mallchat.common.common.constant.RedisKey;
-import com.abin.mallchat.common.common.service.cache.AbstractRedisStringCache;
-import com.abin.mallchat.common.user.dao.UserBackpackDao;
-import com.abin.mallchat.common.user.domain.dto.SummeryInfoDTO;
-import com.abin.mallchat.common.user.domain.entity.*;
-import com.abin.mallchat.common.user.domain.enums.ItemTypeEnum;
+
+import com.lvch.scaffold.common.constant.RedisKey;
+import com.lvch.scaffold.common.dao.UserBackpackDao;
+import com.lvch.scaffold.common.domain.dto.SummeryInfoDTO;
+import com.lvch.scaffold.common.domain.entity.ItemConfig;
+import com.lvch.scaffold.common.domain.entity.IpInfo;
+import com.lvch.scaffold.common.domain.entity.IpDetail;
+import com.lvch.scaffold.common.domain.entity.User;
+import com.lvch.scaffold.common.domain.entity.UserBackpack;
+import com.lvch.scaffold.common.domain.enums.ItemTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

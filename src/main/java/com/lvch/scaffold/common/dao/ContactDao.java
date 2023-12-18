@@ -1,14 +1,15 @@
 package com.lvch.scaffold.common.dao;
 
-import com.abin.mallchat.common.chat.domain.entity.Contact;
-import com.abin.mallchat.common.chat.domain.entity.Message;
-import com.abin.mallchat.common.chat.mapper.ContactMapper;
-import com.abin.mallchat.common.common.domain.vo.request.CursorPageBaseReq;
-import com.abin.mallchat.common.common.domain.vo.response.CursorPageBaseResp;
-import com.abin.mallchat.common.common.utils.CursorUtils;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lvch.scaffold.common.domain.entity.Contact;
+import com.lvch.scaffold.common.domain.entity.Message;
+import com.lvch.scaffold.common.domain.vo.request.CursorPageBaseReq;
+import com.lvch.scaffold.common.domain.vo.response.CursorPageBaseResp;
+import com.lvch.scaffold.common.mapper.ContactMapper;
+import com.lvch.scaffold.common.utils.CursorUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;

@@ -26,6 +26,26 @@ import java.util.stream.Collectors;
  */
 public class CursorUtils {
 
+    public static <T> CursorPageBaseResp<Pair<T, Double>> getCursorPageByRedis(CursorPageBaseReq cursorPageBaseReq, String redisKey, Function<String, T> typeConvert) {
+        Set<ZSetOperations.TypedTuple<String>> typedTuples;
+        if (StrUtil.isBlank(cursorPageBaseReq.getCursor())) {//第一次
+            typedTuples = RedisUtils.zReverseRangeWithScores(redisKey, cursorPageBaseReq.getPageSize());
+        } else {
+            typedTuples = RedisUtils.zReverseRangeByScoreWithScores(redisKey, Double.parseDouble(cursorPageBaseReq.getCursor()), cursorPageBaseReq.getPageSize());
+        }
+        List<Pair<T, Double>> result = typedTuples
+                .stream()
+                .map(t -> Pair.of(typeConvert.apply(t.getValue()), t.getScore()))
+                .sorted((o1, o2) -> o2.getValue().compareTo(o1.getValue()))
+                .collect(Collectors.toList());
+        String cursor = Optional.ofNullable(CollectionUtil.getLast(result))
+                .map(Pair::getValue)
+                .map(String::valueOf)
+                .orElse(null);
+        Boolean isLast = result.size() != cursorPageBaseReq.getPageSize();
+        return new CursorPageBaseResp<>(cursor, isLast, result);
+    }
+
     public static <T> CursorPageBaseResp<T> getCursorPageByMysql(IService<T> mapper, CursorPageBaseReq request, Consumer<LambdaQueryWrapper<T>> initWrapper, SFunction<T, ?> cursorColumn) {
         //游标字段类型
         Class<?> cursorType = LambdaUtils.getReturnType(cursorColumn);

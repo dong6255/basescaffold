@@ -1,8 +1,8 @@
 package com.lvch.scaffold.common.dao;
 
-import com.abin.mallchat.common.chat.domain.entity.RoomGroup;
-import com.abin.mallchat.common.chat.mapper.RoomGroupMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lvch.scaffold.common.domain.entity.RoomGroup;
+import com.lvch.scaffold.common.mapper.RoomGroupMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

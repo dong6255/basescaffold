@@ -73,6 +73,12 @@ public class User implements Serializable {
     private Date lastOptTime;
 
     /**
+     * 最后上下线时间
+     */
+    @TableField(value = "ip_info", typeHandler = JacksonTypeHandler.class)
+    private IpInfo ipInfo;
+
+    /**
      * 佩戴的徽章id
      */
     @TableField("item_id")
@@ -96,4 +102,10 @@ public class User implements Serializable {
     @TableField("update_time")
     private Date updateTime;
 
+    public void refreshIp(String ip) {
+        if (ipInfo == null) {
+            ipInfo = new IpInfo();
+        }
+        ipInfo.refreshIp(ip);
+    }
 }

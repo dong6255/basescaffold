@@ -1,19 +1,20 @@
 package com.lvch.scaffold.common.dao;
 
-import com.abin.mallchat.common.user.domain.entity.UserApply;
-import com.abin.mallchat.common.user.domain.enums.ApplyStatusEnum;
-import com.abin.mallchat.common.user.domain.enums.ApplyTypeEnum;
-import com.abin.mallchat.common.user.mapper.UserApplyMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lvch.scaffold.common.domain.entity.UserApply;
+import com.lvch.scaffold.common.domain.enums.ApplyStatusEnum;
+import com.lvch.scaffold.common.domain.enums.ApplyTypeEnum;
+import com.lvch.scaffold.common.mapper.UserApplyMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.abin.mallchat.common.user.domain.enums.ApplyReadStatusEnum.READ;
-import static com.abin.mallchat.common.user.domain.enums.ApplyReadStatusEnum.UNREAD;
-import static com.abin.mallchat.common.user.domain.enums.ApplyStatusEnum.AGREE;
+import static com.lvch.scaffold.common.domain.enums.ApplyReadStatusEnum.READ;
+import static com.lvch.scaffold.common.domain.enums.ApplyReadStatusEnum.UNREAD;
+import static com.lvch.scaffold.common.domain.enums.ApplyStatusEnum.AGREE;
+
 
 /**
  * <p>

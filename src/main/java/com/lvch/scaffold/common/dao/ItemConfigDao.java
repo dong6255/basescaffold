@@ -1,8 +1,8 @@
 package com.lvch.scaffold.common.dao;
 
-import com.abin.mallchat.common.user.domain.entity.ItemConfig;
-import com.abin.mallchat.common.user.mapper.ItemConfigMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lvch.scaffold.common.domain.entity.ItemConfig;
+import com.lvch.scaffold.common.mapper.ItemConfigMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

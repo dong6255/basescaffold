@@ -4,9 +4,16 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Pair;
 
 import com.lvch.scaffold.common.constant.RedisKey;
+import com.lvch.scaffold.common.dao.BlackDao;
+import com.lvch.scaffold.common.dao.RoleDao;
 import com.lvch.scaffold.common.dao.UserDao;
+import com.lvch.scaffold.common.dao.UserRoleDao;
+import com.lvch.scaffold.common.domain.entity.Black;
+import com.lvch.scaffold.common.domain.entity.User;
+import com.lvch.scaffold.common.domain.entity.UserRole;
 import com.lvch.scaffold.common.domain.vo.request.CursorPageBaseReq;
 import com.lvch.scaffold.common.domain.vo.response.CursorPageBaseResp;
+import com.lvch.scaffold.common.utils.CursorUtils;
 import com.lvch.scaffold.common.utils.RedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;

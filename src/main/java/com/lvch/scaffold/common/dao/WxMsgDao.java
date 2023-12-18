@@ -1,8 +1,9 @@
 package com.lvch.scaffold.common.dao;
 
-import com.abin.mallchat.common.chat.domain.entity.WxMsg;
-import com.abin.mallchat.common.chat.mapper.WxMsgMapper;
+
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lvch.scaffold.common.domain.entity.WxMsg;
+import com.lvch.scaffold.common.mapper.WxMsgMapper;
 import org.springframework.stereotype.Service;
 
 /**

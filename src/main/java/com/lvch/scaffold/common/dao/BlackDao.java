@@ -1,8 +1,8 @@
 package com.lvch.scaffold.common.dao;
 
-import com.abin.mallchat.common.user.domain.entity.Black;
-import com.abin.mallchat.common.user.mapper.BlackMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lvch.scaffold.common.domain.entity.Black;
+import com.lvch.scaffold.common.mapper.BlackMapper;
 import org.springframework.stereotype.Service;
 
 /**

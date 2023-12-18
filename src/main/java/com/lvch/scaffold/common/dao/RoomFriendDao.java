@@ -1,9 +1,9 @@
 package com.lvch.scaffold.common.dao;
 
-import com.abin.mallchat.common.chat.domain.entity.RoomFriend;
-import com.abin.mallchat.common.chat.mapper.RoomFriendMapper;
-import com.abin.mallchat.common.common.domain.enums.NormalOrNoEnum;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lvch.scaffold.common.domain.entity.RoomFriend;
+import com.lvch.scaffold.common.domain.enums.NormalOrNoEnum;
+import com.lvch.scaffold.common.mapper.RoomFriendMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

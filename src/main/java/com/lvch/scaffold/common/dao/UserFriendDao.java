@@ -1,11 +1,11 @@
 package com.lvch.scaffold.common.dao;
 
-import com.abin.mallchat.common.common.domain.vo.request.CursorPageBaseReq;
-import com.abin.mallchat.common.common.domain.vo.response.CursorPageBaseResp;
-import com.abin.mallchat.common.common.utils.CursorUtils;
-import com.abin.mallchat.common.user.domain.entity.UserFriend;
-import com.abin.mallchat.common.user.mapper.UserFriendMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lvch.scaffold.common.domain.entity.UserFriend;
+import com.lvch.scaffold.common.domain.vo.request.CursorPageBaseReq;
+import com.lvch.scaffold.common.domain.vo.response.CursorPageBaseResp;
+import com.lvch.scaffold.common.mapper.UserFriendMapper;
+import com.lvch.scaffold.common.utils.CursorUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

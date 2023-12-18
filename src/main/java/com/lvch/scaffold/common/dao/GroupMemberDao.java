@@ -8,7 +8,9 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lvch.scaffold.common.domain.entity.GroupMember;
+import com.lvch.scaffold.common.domain.enums.GroupRoleEnum;
 import com.lvch.scaffold.common.mapper.GroupMemberMapper;
+import com.lvch.scaffold.common.service.cache.GroupMemberCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.lvch.scaffold.common.domain.enums.GroupRoleEnum.ADMIN_LIST;
 
 
 /**

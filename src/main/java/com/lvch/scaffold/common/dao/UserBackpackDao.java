@@ -1,11 +1,11 @@
 package com.lvch.scaffold.common.dao;
 
-import com.abin.mallchat.common.common.domain.enums.YesOrNoEnum;
-import com.abin.mallchat.common.user.domain.entity.UserBackpack;
-import com.abin.mallchat.common.user.mapper.UserBackpackMapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lvch.scaffold.common.domain.entity.UserBackpack;
+import com.lvch.scaffold.common.domain.enums.YesOrNoEnum;
+import com.lvch.scaffold.common.mapper.UserBackpackMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

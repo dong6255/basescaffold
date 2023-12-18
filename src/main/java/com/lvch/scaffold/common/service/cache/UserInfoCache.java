@@ -1,9 +1,9 @@
 package com.lvch.scaffold.common.service.cache;
 
-import com.abin.mallchat.common.common.constant.RedisKey;
-import com.abin.mallchat.common.common.service.cache.AbstractRedisStringCache;
-import com.abin.mallchat.common.user.dao.UserDao;
-import com.abin.mallchat.common.user.domain.entity.User;
+
+import com.lvch.scaffold.common.constant.RedisKey;
+import com.lvch.scaffold.common.dao.UserDao;
+import com.lvch.scaffold.common.domain.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
