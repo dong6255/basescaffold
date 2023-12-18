@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.lvch.scaffold.common.domain.entity.msg.MessageExtra;
 import lombok.*;
 
 import java.io.Serializable;
@@ -76,11 +77,11 @@ public class Message implements Serializable {
     @TableField("type")
     private Integer type;
 
-    ///**
-    // * 消息扩展字段
-    // */
-    //@TableField(value = "extra", typeHandler = JacksonTypeHandler.class)
-    //private MessageExtra extra;
+    /**
+     * 消息扩展字段
+     */
+    @TableField(value = "extra", typeHandler = JacksonTypeHandler.class)
+    private MessageExtra extra;
 
     /**
      * 创建时间

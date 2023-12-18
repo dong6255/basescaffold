@@ -25,8 +25,17 @@ import java.util.stream.Collectors;
 @Component
 public class UserCache {
 
+
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private BlackDao blackDao;
+    @Autowired
+    private RoleDao roleDao;
+    @Autowired
+    private UserRoleDao userRoleDao;
+    @Autowired
+    private UserSummaryCache userSummaryCache;
 
     public Long getOnlineNum() {
         String onlineKey = RedisKey.getKey(RedisKey.ONLINE_UID_ZET);
@@ -80,23 +89,86 @@ public class UserCache {
         RedisUtils.zAdd(offlineKey, uid, optTime.getTime());
     }
 
+    public CursorPageBaseResp<Pair<Long, Double>> getOnlineCursorPage(CursorPageBaseReq pageBaseReq) {
+        return CursorUtils.getCursorPageByRedis(pageBaseReq, RedisKey.getKey(RedisKey.ONLINE_UID_ZET), Long::parseLong);
+    }
+
+    public CursorPageBaseResp<Pair<Long, Double>> getOfflineCursorPage(CursorPageBaseReq pageBaseReq) {
+        return CursorUtils.getCursorPageByRedis(pageBaseReq, RedisKey.getKey(RedisKey.OFFLINE_UID_ZET), Long::parseLong);
+    }
+
+    public List<Long> getUserModifyTime(List<Long> uidList) {
+        List<String> keys = uidList.stream().map(uid -> RedisKey.getKey(RedisKey.USER_MODIFY_STRING, uid)).collect(Collectors.toList());
+        return RedisUtils.mget(keys, Long.class);
+    }
+
     public void refreshUserModifyTime(Long uid) {
         String key = RedisKey.getKey(RedisKey.USER_MODIFY_STRING, uid);
         RedisUtils.set(key, new Date().getTime());
     }
 
-    ///**
-    // * 获取用户信息，盘路缓存模式
-    // */
-    //public User getUserInfo(Long uid) {//todo 后期做二级缓存
-    //    return getUserInfoBatch(Collections.singleton(uid)).get(uid);
-    //}
+    /**
+     * 获取用户信息，盘路缓存模式
+     */
+    public User getUserInfo(Long uid) {//todo 后期做二级缓存
+        return getUserInfoBatch(Collections.singleton(uid)).get(uid);
+    }
 
+    /**
+     * 获取用户信息，盘路缓存模式
+     */
+    public Map<Long, User> getUserInfoBatch(Set<Long> uids) {
+        //批量组装key
+        List<String> keys = uids.stream().map(a -> RedisKey.getKey(RedisKey.USER_INFO_STRING, a)).collect(Collectors.toList());
+        //批量get
+        List<User> mget = RedisUtils.mget(keys, User.class);
+        Map<Long, User> map = mget.stream().filter(Objects::nonNull).collect(Collectors.toMap(User::getId, Function.identity()));
+        //发现差集——还需要load更新的uid
+        List<Long> needLoadUidList = uids.stream().filter(a -> !map.containsKey(a)).collect(Collectors.toList());
+        if (CollUtil.isNotEmpty(needLoadUidList)) {
+            //批量load
+            List<User> needLoadUserList = userDao.listByIds(needLoadUidList);
+            Map<String, User> redisMap = needLoadUserList.stream().collect(Collectors.toMap(a -> RedisKey.getKey(RedisKey.USER_INFO_STRING, a.getId()), Function.identity()));
+            RedisUtils.mset(redisMap, 5 * 60);
+            //加载回redis
+            map.putAll(needLoadUserList.stream().collect(Collectors.toMap(User::getId, Function.identity())));
+        }
+        return map;
+    }
+
+    public void userInfoChange(Long uid) {
+        delUserInfo(uid);
+        //删除UserSummaryCache，前端下次懒加载的时候可以获取到最新的数据
+        userSummaryCache.delete(uid);
+        refreshUserModifyTime(uid);
+    }
 
     public void delUserInfo(Long uid) {
         String key = RedisKey.getKey(RedisKey.USER_INFO_STRING, uid);
         RedisUtils.del(key);
     }
 
+    @Cacheable(cacheNames = "user", key = "'blackList'")
+    public Map<Integer, Set<String>> getBlackMap() {
+        Map<Integer, List<Black>> collect = blackDao.list().stream().collect(Collectors.groupingBy(Black::getType));
+        Map<Integer, Set<String>> result = new HashMap<>(collect.size());
+        for (Map.Entry<Integer, List<Black>> entry : collect.entrySet()) {
+            result.put(entry.getKey(), entry.getValue().stream().map(Black::getTarget).collect(Collectors.toSet()));
+        }
+        return result;
+    }
+
+    @CacheEvict(cacheNames = "user", key = "'blackList'")
+    public Map<Integer, Set<String>> evictBlackMap() {
+        return null;
+    }
+
+    @Cacheable(cacheNames = "user", key = "'roles'+#uid")
+    public Set<Long> getRoleSet(Long uid) {
+        List<UserRole> userRoles = userRoleDao.listByUid(uid);
+        return userRoles.stream()
+                .map(UserRole::getRoleId)
+                .collect(Collectors.toSet());
+    }
 
 }
